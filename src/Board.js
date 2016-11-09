@@ -79,12 +79,23 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
+      //console.log(this.get(rowIndex));
+      debugger;
+      var horArray = this.get(rowIndex);
       return false; // fixme
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      //var length = this.get('n');      
+      var flag = false;
+      _.each(this.rows(), function (row) {  
+        var sum = row.reduce(function (a, b) { return a + b; }, 0);
+        if (sum > 1 || flag === true) {
+          flag = true;
+        }
+      });
+      return flag;
     },
 
 
