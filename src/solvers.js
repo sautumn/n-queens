@@ -13,19 +13,74 @@
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
+window.findNRookSolution = function (startingRow, startingCol, n) {
+  var newBoard = new Board({n: n});
+  var board = newBoard.rows();
+  //add 1 to position
+  newBoard.togglePiece(startingRow, startingCol);
+  var rookCount = 1;
+  
+  for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+      if (i !== startingRow || j !== startingCol) {
+        newBoard.togglePiece(i, j);
+        if (newBoard.hasAnyRooksConflicts()) {
+          newBoard.togglePiece(i, j);
+        } else {
+          rookCount++;
+        }
+      }
+      if (rookCount === n) {
+        return newBoard;
+      }
+    }
 
+  }
+};
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
 
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
+  var solutionArr = [];
+  for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+      solutionArr.push(findNRookSolution(i, j, n).rows());
+    }
+  }
+  
+  solutionArr = _.uniq(solutionArr);
+  var solutionArrString = _.map(solutionArr, function(boardArr) {
+    return JSON.stringify(boardArr);
+  });
+  var uniqSolutionArrString = _.uniq(solutionArrString);
+
+  solutionArr = _.map(uniqSolutionArrString, function (arr) {
+    return JSON.parse(arr);
+  });
+
+  console.log(solutionArr);
+  return solutionArr[0];
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
   var solutionCount = undefined; //fixme
 
+  var solutionArr = [];
+  for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+      solutionArr.push(findNRookSolution(i, j, n).rows());
+    }
+  }
+
+  var solutionArrString = _.map(solutionArr, function(boardArr) {
+    return JSON.stringify(boardArr);
+  });
+  var uniqSolutionArrString = _.uniq(solutionArrString);
+  solutionArr = _.map(uniqSolutionArrString, function (arr) {
+    return JSON.parse(arr);
+  });
+
+  solutionCount = solutionArr.length;
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };

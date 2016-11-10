@@ -6,6 +6,7 @@ describe('solvers', function() {
     it('finds a valid solution for n of 1-8', function() {
       _.range(1, 9).map(function(n) {
         var solutionBoard = new Board(findNRooksSolution(n));
+        //var temp = newBoard(findNRooksSolution(5));
         var numPieces = _.reduce(solutionBoard.rows(), function(memo, row) {
           return memo + _.reduce(row, function(memo, col) {
             return memo + col;
@@ -26,7 +27,7 @@ describe('solvers', function() {
       _.range(1, 9).map(function(n) {
         var solutionCount = countNRooksSolutions(n);
         var expectedSolutionCount = [1, 1, 2, 6, 24, 120, 720, 5040, 40320][n];
-
+        console.log(solutionCount, expectedSolutionCount);
         expect(solutionCount).to.be.equal(expectedSolutionCount);
       });
     });
