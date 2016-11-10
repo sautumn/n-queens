@@ -79,38 +79,51 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      //console.log(this.get(rowIndex));
-      debugger;
-      var horArray = this.get(rowIndex);
-      return false; // fixme
+      var rows = this.rows()[rowIndex];
+      var sum = _.reduce(rows, function(a, b) {
+        return a + b;
+      });
+      return sum > 1;
     },
 
     // test if any rows on this board contain conflicts
-    hasAnyRowConflicts: function() {
-      //var length = this.get('n');      
+    hasAnyRowConflicts: function() {    
       var flag = false;
-      _.each(this.rows(), function (row) {  
-        var sum = row.reduce(function (a, b) { return a + b; }, 0);
-        if (sum > 1 || flag === true) {
+      _.each(this.rows(), function (row, index) {  
+        if (this.hasRowConflictAt(index) || flag) {
           flag = true;
         }
-      });
+      }.bind(this));
       return flag;
     },
-
-
 
     // COLUMNS - run from top to bottom
     // --------------------------------------------------------------
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      var length = this.get('n');
+      var matrix = this.rows();
+      var count = 0;
+      for (var i = 0; i < length; i++) {
+        count += matrix[i][colIndex];
+        if (count > 1) {
+          return true;
+        }
+      }
+      return false; 
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      var length = this.get('n');
+      var flag = false;
+      for (var i = 0; i < length; i++) {  
+        if (this.hasColConflictAt(i) || flag) {
+          flag = true;
+        }
+      }
+      return flag;
     },
 
 
@@ -140,6 +153,35 @@
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
+      var board = this.rows();
+      var length = this.get('n');
+      //var flag = false
+      for (var i = 0; i < length; i++) {
+        var sum = 0;
+        var rowIndex = i + 1;
+        for (var j = 0; j <= i; j++) {
+          rowIndex -= 1;
+          sum += board[rowIndex][j];
+        }
+        if (sum > 1) {
+          return true;
+        }
+        // console.log('sum top', sum); // 0, 2, 2, 2
+      }
+
+ 
+      for (var i = length - 1; i >= 0; i--) {
+        var sum = 0;
+        var colIndex = i - 1;
+        for (var j = length - 1; j >= i; j--) {
+          colIndex += 1;
+          sum += board[j][colIndex];
+        }
+        if (sum > 1) {
+          return true;
+        }
+        //console.log('sum bottom', sum); //1, 2, 1, 2 
+      }
       return false; // fixme
     }
 
