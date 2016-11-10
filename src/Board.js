@@ -138,17 +138,70 @@
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      var board = this.rows();
+      var length = this.get('n') - 1;
+      //var flag = false
+      for (var i = length; i >= 0; i--) {
+        var sum = 0;
+        var rowIndex = (length - i) + 1;
+        for (var j = length; j >= i; j--) {
+          rowIndex -= 1;
+          sum += board[rowIndex][j];
+        }
+        if (sum > 1) {
+          return true;
+        }
+      }
+
+      length = length + 1;
+
+      for (var i = 0; i < length; i++) {
+        var sum = 0;
+        var rowIndex = (length - 1 - i) - 1;
+        for (var j = 0; j <= i; j++) {
+          rowIndex += 1;
+          sum += board[rowIndex][j];
+        }
+        if (sum > 1) {
+          return true;
+        }
+      }
+      return false;
     },
-
-
 
     // Minor Diagonals - go from top-right to bottom-left
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      // var board = this.rows();
+      // var length = this.get('n');
+
+      // for (var i = 0; i < length; i++) {
+      //   var sum = 0;
+      //   var rowIndex = i + 1;
+      //   for (var j = 0; j <= i; j++) {
+      //     rowIndex -= 1;
+      //     sum += board[rowIndex][j];
+      //   }
+      //   if (sum > 1) {
+      //     return true;
+      //   }
+      // }
+
+
+      // for (var i = length - 1; i >= 0; i--) {
+      //   var sum = 0;
+      //   var colIndex = i - 1;
+      //   for (var j = length - 1; j >= i; j--) {
+      //     colIndex += 1;
+      //     sum += board[j][colIndex];
+      //   }
+      //   if (sum > 1) {
+      //     return true;
+      //   }
+      // }
+      return false; 
     },
 
     // test if any minor diagonals on this board contain conflicts
@@ -166,10 +219,8 @@
         if (sum > 1) {
           return true;
         }
-        // console.log('sum top', sum); // 0, 2, 2, 2
       }
 
- 
       for (var i = length - 1; i >= 0; i--) {
         var sum = 0;
         var colIndex = i - 1;
@@ -180,9 +231,8 @@
         if (sum > 1) {
           return true;
         }
-        //console.log('sum bottom', sum); //1, 2, 1, 2 
       }
-      return false; // fixme
+      return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
