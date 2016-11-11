@@ -19,7 +19,6 @@ window.findNRookSolution = function (n) {
   var n = newBoard.get('n');
   var solutionArr = [];
 
-
   var decisionTree = function(board, rookCount) {
     for (var i = 0; i < n; i++) {
       for (var j = 0; j < n; j++) {
@@ -61,7 +60,6 @@ window.findNRooksSolution = function(n) {
   solutionArr = _.map(uniqSolutionArrString, function (arr) {
     return JSON.parse(arr);
   });
-  //console.log(solutionArr);
   return solutionArr[0];
 };
 
@@ -69,25 +67,8 @@ window.findNRooksSolution = function(n) {
 window.countNRooksSolutions = function(n) {
 
   var solutionArr = findNRooksSolution(n).length;
- 
-
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solutionArr));
+  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solutionArr));
   return solutionArr;
-  /*
-  var solutionArr = findNRookSolution(n);
-  //console.log(solutionArr); 
-  
-  //solutionArr = _.uniq(solutionArr);
-  var solutionArrString = _.map(solutionArr, function(boardArr) {
-    return JSON.stringify(boardArr);
-  });
-  var uniqSolutionArrString = _.uniq(solutionArrString);
-
-  solutionArr = _.map(uniqSolutionArrString, function (arr) {
-    return JSON.parse(arr);
-  });
-  return solutionArr.length;
-  */
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
