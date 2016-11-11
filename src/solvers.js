@@ -13,103 +13,39 @@
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
-window.findNRookSolution = function (startingRow, startingCol, n) {
+window.findNRookSolution = function (n) {
   var newBoard = new Board({n: n});
   var board = newBoard.rows();
-  //add 1 to position
-  newBoard.togglePiece(startingRow, startingCol);
-  var rookCount = 1;
-  var solutionBoard = [];
+  var n = newBoard.get('n');
+  var solutionArr = [];
 
-  var getNextCoordinate = function (board, currentRow, currentColumn) {
-    var n = board.get('n');
-    var firstFlag = true;
-    for (var i = currentRow; i < n; i++) {
+
+  var decisionTree = function(board, rookCount) {
+    for (var i = 0; i < n; i++) {
       for (var j = 0; j < n; j++) {
-        if (firstFlag) {
-          j = currentColumn;
-          firstFlag = false;
-        }
         if (board.rows()[i][j] !== 1) {
-          return [i, j];
-        }
-      } 
-    }
-    return false;
-  };
-
-
-  var decisionTree = function(i, j, rookCount) {
-    if (i !== startingRow || j !== startingCol) {
-      newBoard.togglePiece(i, j);  
-    } 
-    if (rookCount === n) {
-      solutionBoard.push(newBoard);
-      rookCount = 0;
-      return null;
-    } else if (newBoard.hasAnyRooksConflicts()) {
-      //has a rook conflict, need to get next x,y
-      var nextCoordinate = getNextCoordinate(newBoard, i, j, rookCount);
-      newBoard.togglePiece(i, j);
-      if (nextCoordinate !== false) {
-        decisionTree(nextCoordinate[0], nextCoordinate[1], rookCount);
-      }
-      if (rookCount === n) {
-        solutionBoard.push(newBoard);
-        rookCount = 0;
-        return null;
-      }
-    } else {
-      //no rook conflict, increment counter
-      rookCount++;
-      var nextCoordinate = getNextCoordinate(newBoard, i, j);
-      if (nextCoordinate !== false) {
-        decisionTree(nextCoordinate[0], nextCoordinate[1], rookCount);
-      }
-      if (rookCount === n) {
-        solutionBoard.push(newBoard);
-        rookCount = 0;
-        return null;
-      }
-
-    }
-    if (nextCoordinate !== false) {
-      decisionTree(nextCoordinate[0], nextCoordinate[1], rookCount);
-    }
-  };
-
-
-  var decisionTree = function(i, j, rookCount) {
-
-    for (var x = 0; x < n; x++) {
-      for (var y = 0; y < n; y++) {
-        if (i !== startingRow || j !== startingCol) {
-          newBoard.togglePiece(i, j);
-        }
-        if (newBoard.hasAnyRooksConflicts()) {
-          newBoard.togglePiece(i, j);
-        } else {
-          rookCount++;
-          var nextCoordinate = getNextCoordinate(newBoard, i, j);
-          if (nextCoordinate !== false) {
-            decisionTree(nextCoordinate[0], nextCoordinate[1], rookCount);
-          }
-          if (rookCount === n) {
-            solutionBoard.push(newBoard);
+          board.togglePiece(i, j);
+          if (board.hasAnyRooksConflicts()) {
+            board.togglePiece(i, j);
+          } else {
+            rookCount++;
+            if (rookCount === n) {
+              var temp = JSON.parse(JSON.stringify(board.rows()));
+              solutionArr.push(temp);
+              board.togglePiece(i, j);
+            } else {
+              //var temp = new Board(board.rows());
+              decisionTree(board, rookCount);
+              board.togglePiece(i, j);
+              rookCount--;
+            }
           }
         }
-        var nextCoordinate = getNextCoordinate(newBoard, i, j);
-        if (nextCoordinate !== false) {
-          decisionTree(nextCoordinate[0], nextCoordinate[1], rookCount);
-        }
       }
     }
   };
-
-  var rookCount = 0;
-  debugger;
-  decisionTree(0, 0, rookCount);
-  return solutionBoard;
+  decisionTree(newBoard, 0);
+  return solutionArr;
   /*
   var solutionBoard = []; 
   for (var i = 0; i < n; i++) {
@@ -141,10 +77,10 @@ window.findNRooksSolution = function(n) {
   }
   */
   //debugger;
-  var solution = findNRookSolution(0, 0, 2);
-  console.log(solution[0].rows()); 
-  /*
-  solutionArr = _.uniq(solutionArr);
+  var solutionArr = findNRookSolution(5);
+  //console.log(solutionArr); 
+  
+  //solutionArr = _.uniq(solutionArr);
   var solutionArrString = _.map(solutionArr, function(boardArr) {
     return JSON.stringify(boardArr);
   });
@@ -153,34 +89,27 @@ window.findNRooksSolution = function(n) {
   solutionArr = _.map(uniqSolutionArrString, function (arr) {
     return JSON.parse(arr);
   });
-
   console.log(solutionArr);
   return solutionArr[0];
-  */
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
-
-  var solutionArr = [];
-  for (var i = 0; i < n; i++) {
-    for (var j = 0; j < n; j++) {
-      solutionArr.push(findNRookSolution(i, j, n).rows());
-    }
-  }
-
+  /*
+  var solutionArr = findNRookSolution(n);
+  //console.log(solutionArr); 
+  
+  //solutionArr = _.uniq(solutionArr);
   var solutionArrString = _.map(solutionArr, function(boardArr) {
     return JSON.stringify(boardArr);
   });
   var uniqSolutionArrString = _.uniq(solutionArrString);
+
   solutionArr = _.map(uniqSolutionArrString, function (arr) {
     return JSON.parse(arr);
   });
-
-  solutionCount = solutionArr.length;
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
+  return solutionArr.length;
+  */
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
